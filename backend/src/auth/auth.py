@@ -40,7 +40,7 @@ def get_token_auth_header():
         'description': 'Authorization header must be provided'
     }, 401)
     # split auth_header into auth type and token
-    sections = auth_header.split('.')
+    sections = auth_header.split()
     if sections[0].lower() != 'bearer':
         raise AuthError({
             'code': 'Invalid Header',
@@ -100,7 +100,11 @@ def check_permissions(permission, payload):
 def verify_decode_jwt(token):
     jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
     jwks = json.loads(jsonurl.read())
-    unverified_header = jwt.get_unverified_header(token)
+    try: 
+        unverified_header = jwt.get_unverified_header(token)
+    except Exception as e:
+        print('something went wrong')
+
     rsa_key = {}
     if 'kid' not in unverified_header:
         raise AuthError({
