@@ -29,8 +29,19 @@ db_drop_and_create_all()
 '''
 @app.route('/drinks', methods=['GET'])
 def get_drinks():
-    print('Getting drinks....')
-    return 'drinks'
+    try:
+        drinks = Drink.query.all()
+        formatted_drinks = []
+        for drink in drinks:
+            formatted_drinks.append(drink.short())
+    except:
+        abort(404)
+    return jsonify(
+        {
+            "success": True,
+            "drinks": formatted_drinks
+        }
+    )
 '''
 @TODO implement endpoint
     GET /drinks-detail
