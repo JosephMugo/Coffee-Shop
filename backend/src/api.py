@@ -31,17 +31,16 @@ db_drop_and_create_all()
 def get_drinks():
     try:
         drinks = Drink.query.all()
-        formatted_drinks = []
-        for drink in drinks:
-            formatted_drinks.append(drink.short())
-    except:
+        formatted_drinks = [drink.short() for drink in drinks]
+        return jsonify(
+            {
+                "success": True,
+                "drinks": formatted_drinks
+            }
+        )
+    except Exception as e:
+        print(e)
         abort(404)
-    return jsonify(
-        {
-            "success": True,
-            "drinks": formatted_drinks
-        }
-    )
 '''
 @TODO implement endpoint
     GET /drinks-detail
@@ -53,20 +52,19 @@ def get_drinks():
 @app.route('/drinks-detail', methods=['GET'])
 @requires_auth('get:drinks-detail')
 def get_drinks_detail(jwt):
-    print(jwt)
     try:
         drinks = Drink.query.all()
-        formatted_drinks = []
-        for drink in drinks:
-            formatted_drinks.append(drink.long())
-    except:
+        formatted_drinks = [drink.long() for drink in drinks]
+        return jsonify(
+            {
+                "success": True,
+                "drinks": formatted_drinks
+            }
+        )
+    except Exception as e:
+        print(e)
         abort(404)
-    return jsonify(
-        {
-            "success": True,
-            "drinks": formatted_drinks
-        }
-    )
+    
 '''
 @TODO implement endpoint
     POST /drinks
@@ -76,8 +74,31 @@ def get_drinks_detail(jwt):
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
         or appropriate status code indicating reason for failure
 '''
-
-
+@app.route('/drinks', methods=['POST'])
+@requires_auth('post:drinks')
+def post_drinks(jwt):
+    body = request.get_json()
+    if body == None:
+        abort(422)
+    title = body.get('title', None)
+    recipe = body.get('recipe', None)
+    try:
+        if (title == None):
+            abort(422)
+        if (recipe == None):
+            abort(422)
+        recipe = json.dumps([recipe])
+        drink = Drink(title=title, recipe=recipe)
+        drink.insert()
+        return jsonify(
+            {
+                "success": True,
+                "drinks": [drink.long()]
+            }
+        )
+    except Exception as e:
+        print(e)
+        abort(404)
 '''
 @TODO implement endpoint
     PATCH /drinks/<id>
