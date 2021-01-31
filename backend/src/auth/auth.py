@@ -103,7 +103,11 @@ def verify_decode_jwt(token):
     try: 
         unverified_header = jwt.get_unverified_header(token)
     except Exception as e:
-        print('something went wrong')
+        raise AuthError({
+            'code': 'invalid_header',
+            'description': 'Token headers invalid'
+        }, 401)
+        abort(500)
 
     rsa_key = {}
     if 'kid' not in unverified_header:

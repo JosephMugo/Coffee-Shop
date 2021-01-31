@@ -39,7 +39,6 @@ def get_drinks():
             }
         )
     except Exception as e:
-        print(e)
         abort(404)
 '''
 @TODO implement endpoint
@@ -62,7 +61,6 @@ def get_drinks_detail(jwt):
             }
         )
     except Exception as e:
-        print(e)
         abort(404)
     
 '''
@@ -97,7 +95,6 @@ def post_drinks(jwt):
             }
         )
     except Exception as e:
-        print(e)
         abort(404)
 '''
 @TODO implement endpoint
@@ -119,7 +116,6 @@ def patch_drink(jwt, id):
         drink = Drink.query.filter_by(id=id).one_or_none()
         if drink == None:
             abort(422)
-        print(drink)
         body = request.get_json()
         if body == None:
             abort(422)
@@ -133,7 +129,6 @@ def patch_drink(jwt, id):
             }
         )
     except Exception as e:
-        print(e)
         abort(404)
 
 '''
@@ -146,7 +141,25 @@ def patch_drink(jwt, id):
     returns status code 200 and json {"success": True, "delete": id} where id is the id of the deleted record
         or appropriate status code indicating reason for failure
 '''
-
+@app.route('/drinks/<int:id>', methods=['DELETE'])
+@requires_auth('delete:drinks')
+def delete_drink(jwt, id):
+    if id == None:
+        abort(404)
+    try:
+        drink = Drink.query.filter_by(id=id).one_or_none()
+        if drink == None:
+            abort(422)
+        body = request.get_json()
+        drink.delete()
+        return jsonify(
+            {
+                "success": True,
+                "delete": id
+            }
+        )
+    except Exception as e:
+        abort(404)
 
 ## Error Handling
 '''
