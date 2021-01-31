@@ -30,12 +30,11 @@ db_drop_and_create_all()
 @app.route('/drinks', methods=['GET'])
 def get_drinks():
     try:
-        drinks = Drink.query.all()
-        formatted_drinks = [drink.short() for drink in drinks]
+        drinks = list(map(Drink.short, Drink.query.all()))
         return jsonify(
             {
                 "success": True,
-                "drinks": formatted_drinks
+                "drinks": drinks
             }
         )
     except Exception as e:
