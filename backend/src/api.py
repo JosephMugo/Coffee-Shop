@@ -83,13 +83,17 @@ def post_drinks(jwt):
             abort(422)
         if (recipe == None):
             abort(422)
+        print(type(recipe))
+        if isinstance(recipe, list):
+            recipe = recipe[0]
+        print(recipe)
         recipe = json.dumps([recipe])
         drink = Drink(title=title, recipe=recipe)
         drink.insert()
         return jsonify(
             {
                 "success": True,
-                "drinks": [drink.long()]
+                "drinks": list(map(Drink.long, Drink.query.all()))
             }
         )
     except Exception as e:
