@@ -51,12 +51,11 @@ def get_drinks():
 @requires_auth('get:drinks-detail')
 def get_drinks_detail(jwt):
     try:
-        drinks = Drink.query.all()
-        formatted_drinks = [drink.long() for drink in drinks]
+        drinks = list(map(Drink.long, Drink.query.all()))
         return jsonify(
             {
                 "success": True,
-                "drinks": formatted_drinks
+                "drinks": drinks
             }
         )
     except Exception as e:
