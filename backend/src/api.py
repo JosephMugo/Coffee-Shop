@@ -78,15 +78,13 @@ def post_drinks(jwt):
         abort(422)
     title = body.get('title', None)
     recipe = body.get('recipe', None)
+    if (title == None):
+        abort(422)
+    if (recipe == None):
+        abort(422)
     try:
-        if (title == None):
-            abort(422)
-        if (recipe == None):
-            abort(422)
-        print(type(recipe))
         if isinstance(recipe, list):
             recipe = recipe[0]
-        print(recipe)
         recipe = json.dumps([recipe])
         drink = Drink(title=title, recipe=recipe)
         drink.insert()
@@ -114,12 +112,12 @@ def post_drinks(jwt):
 def patch_drink(jwt, id):
     if id == None:
         abort(404)
+    body = request.get_json()
+    if body == None:
+        abort(422)
     try:
         drink = Drink.query.filter_by(id=id).one_or_none()
         if drink == None:
-            abort(422)
-        body = request.get_json()
-        if body == None:
             abort(422)
         title = body.get('title')
         drink.title = title
@@ -152,7 +150,6 @@ def delete_drink(jwt, id):
         drink = Drink.query.filter_by(id=id).one_or_none()
         if drink == None:
             abort(422)
-        body = request.get_json()
         drink.delete()
         return jsonify(
             {
