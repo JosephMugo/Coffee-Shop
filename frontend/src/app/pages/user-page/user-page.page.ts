@@ -12,7 +12,7 @@ export class UserPagePage implements OnInit {
 
   constructor(public auth: AuthService) {
     this.loginURL = auth.build_login_link('/tabs/user-page');
-    this.logoutURL = auth.build_logout_link()
+    this.logoutURL = auth.build_logout_link('/tabs/drink-menu')
   }
 
   ngOnInit() {

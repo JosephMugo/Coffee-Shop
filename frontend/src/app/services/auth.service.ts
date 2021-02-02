@@ -31,12 +31,12 @@ export class AuthService {
     return link;
   }
 
-  build_logout_link() {
+  build_logout_link(callbackPath = '') {
     let link = 'https://';
     link += this.url + '.auth0.com/v2';
     link += '/logout?';
     link += 'client_id=' + this.clientId + '&';
-    link += 'redirect_uri=' + this.callbackURL;
+    link += 'redirect_uri=' + this.callbackURL + callbackPath;
     return link;
   }
 
